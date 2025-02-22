@@ -29,7 +29,7 @@ with st.sidebar:
         chat_id = f"Chat {len(st.session_state['chat_sessions']) + 1}"
         st.session_state["chat_sessions"][chat_id] = []
         st.session_state["selected_chat"] = chat_id
-        st.experimental_rerun()
+        st.rerun()
 
     # 📂 File Upload
     uploaded_file = st.file_uploader("📁 Upload File", type=["txt", "pdf", "csv", "json"])
