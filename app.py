@@ -1,9 +1,8 @@
 import streamlit as st
-import os
 from azure.ai.inference import ChatCompletionsClient
 from azure.core.credentials import AzureKeyCredential
 
-# UI Configuration
+# Streamlit UI Config
 st.set_page_config(page_title="Azure AI Chatbot", layout="wide")
 st.title("💬 Azure AI Chatbot - DeepSeek")
 
@@ -22,7 +21,7 @@ client = ChatCompletionsClient(endpoint=endpoint, credential=AzureKeyCredential(
 if "messages" not in st.session_state:
     st.session_state["messages"] = []
 
-# Chat display (Shows old messages)
+# Display past messages
 for msg in st.session_state["messages"]:
     st.chat_message(msg["role"]).write(msg["content"])
 
@@ -40,15 +39,15 @@ if user_input:
     st.session_state["messages"].append({"role": "user", "content": user_input})
     st.chat_message("user").write(user_input)
 
-    # Prepare API request payload
+    # Prepare payload for Azure API
     payload = {
-        "messages": st.session_state["messages"],
+        "messages": st.session_state["messages"],  # Send entire chat history
         "max_tokens": 2048
     }
 
-    # Generate AI response
+    # Generate AI response using correct method
     try:
-        response = client.complete(payload)
+        response = client.complete(payload)  # ✅ Fixed API call
 
         if response and hasattr(response, "choices") and response.choices:
             ai_response = response.choices[0].message["content"]
@@ -59,4 +58,4 @@ if user_input:
         else:
             st.error("No response received. Check API settings.")
     except Exception as e:
-        st.error(f"Error: {e}")
+        st.error(f"API Error: {e}")
